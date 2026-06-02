@@ -408,6 +408,9 @@ Use bb run --help to show this help output.
                                                 (repl/repl-read (common/ctx) @sci/in request-prompt request-exit))
                                               {:ns clojure-main-ns})
                       'with-read-known (sci/copy-var clojure-main/with-read-known clojure-main-ns)
+                      'ex-triage (sci/copy-var clojure-main/ex-triage clojure-main-ns)
+                      'ex-str (sci/copy-var clojure.main/ex-str clojure-main-ns)
+                      'err->msg (sci/copy-var clojure.main/err->msg clojure-main-ns)
                       'main main-var}
        'clojure.test t/clojure-test-namespace
        'clojure.math math-namespace

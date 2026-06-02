@@ -15,7 +15,8 @@
       :author "Stephen C. Gilardi and Rich Hickey"
       :no-doc true}
     babashka.impl.clojure.main
-  (:refer-clojure :exclude [with-bindings]))
+  (:refer-clojure :exclude [with-bindings])
+  (:require [clojure.string :as str]))
 
 (set! *warn-on-reflection* true)
 
@@ -62,6 +63,16 @@ by default when a new command-line REPL is started."} repl-requires
   [& body]
   `(binding [*read-eval* (if (= :unknown *read-eval*) true *read-eval*)]
      ~@body))
+
+(defn ex-triage
+  "Delegates to clojure.main/ex-triage, then strips any :clojure.error/symbol
+  whose namespace is sci.* — those are SCI interpreter internals, not user code."
+  [datafied-throwable]
+  (let [result (clojure.main/ex-triage datafied-throwable)
+        sym    (:clojure.error/symbol result)]
+    (if (and sym (str/starts-with? (namespace sym) "sci."))
+      (dissoc result :clojure.error/symbol)
+      result)))
 
 (defn repl
   "Generic, reusable, read-eval-print loop. By default, reads from *in*,
